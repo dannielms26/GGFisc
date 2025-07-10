@@ -1,73 +1,53 @@
-const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
-const pdfList = document.getElementById('pdfList');
+const fileList = document.getElementById('fileList');
+let selectedFiles = [];
 
-// Clique para abrir seletor
-dropzone.addEventListener('click', () => fileInput.click());
-
-// Drag & drop
-dropzone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropzone.classList.add('dragover');
-});
-dropzone.addEventListener('dragleave', () => {
-  dropzone.classList.remove('dragover');
-});
-dropzone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropzone.classList.remove('dragover');
-  const files = e.dataTransfer.files;
-  handleUpload(files[0]);
-});
-
-// Input manual
 fileInput.addEventListener('change', () => {
-  const file = fileInput.files[0];
-  handleUpload(file);
+  handleFiles(fileInput.files);
 });
 
-// Upload PDF
-async function handleUpload(file) {
-  if (!file || file.type !== 'application/pdf') {
-    alert('Por favor, envie um arquivo PDF válido.');
+function handleDrop(event) {
+  event.preventDefault();
+  handleFiles(event.dataTransfer.files);
+}
+
+function handleFiles(files) {
+  selectedFiles = [];
+  for (let file of files) {
+    if (file.type === "application/pdf") {
+      selectedFiles.push(file);
+    }
+  }
+  renderFiles();
+}
+
+function renderFiles() {
+  fileList.innerHTML = "";
+  selectedFiles.forEach(file => {
+    const li = document.createElement("li");
+    li.textContent = "📄 " + file.name;
+    fileList.appendChild(li);
+  });
+}
+
+function goToNext() {
+  if (selectedFiles.length === 0) {
+    alert("Selecione ao menos um arquivo PDF.");
     return;
   }
 
-  const formData = new FormData();
-  formData.append('pdf', file);
-
-  const response = await fetch('/upload', {
-    method: 'POST',
-    body: formData
+  const readerPromises = selectedFiles.map(file => {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve({ name: file.name, dataUrl: reader.result });
+      };
+      reader.readAsDataURL(file);
+    });
   });
 
-  const result = await response.json();
-  alert(result.message);
-  loadPDFs();
-}
-
-// Carregar PDFs do JSON
-async function loadPDFs() {
-  const res = await fetch('/data.json');
-  const data = await res.json();
-
-  pdfList.innerHTML = '';
-  data.reverse().forEach(pdf => {
-    const item = document.createElement('div');
-    item.className = 'pdf-item';
-
-    const name = document.createElement('span');
-    name.textContent = pdf.name;
-
-    const link = document.createElement('a');
-    link.href = '/' + pdf.url;
-    link.target = '_blank';
-    link.textContent = 'Visualizar';
-
-    item.appendChild(name);
-    item.appendChild(link);
-    pdfList.appendChild(item);
+  Promise.all(readerPromises).then(results => {
+    sessionStorage.setItem("pdfFiles", JSON.stringify(results));
+    window.location.href = "converter.html";
   });
 }
-
-loadPDFs();
