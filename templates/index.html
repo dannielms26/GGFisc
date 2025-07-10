@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Automação Fiscal</title>
-  <link rel="stylesheet" href="/static/css/style.css">
+  <title>Gerenciador de PDFs</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-
-  <header>
-    <img src="icone.PNG" alt="ícone">
-    <h1>G-Fical Automação</h1>
-    <div></div>
-  </header>
-
   <div class="container">
-    <p>Faça o upload do arquivo PDF da nota fiscal de serviço (tomador) para gerar o arquivo XML correspondente.</p>
-    <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
-    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">SELECIONAR ARQUIVOS PDF</button>
+    <h1>Upload de PDFs</h1>
 
-    <div class="drag-area" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
-      <p>ARRASTE OS ARQUIVOS AQUI:</p>
-      <ul class="file-list" id="fileList"></ul>
+    <div id="dropzone" class="dropzone">
+      <p>Arraste seu PDF aqui ou clique para selecionar</p>
+      <input type="file" id="fileInput" accept="application/pdf" hidden>
     </div>
 
-    <button class="continue-btn" onclick="goToNext()">CONTINUAR</button>
+    <div id="pdfList" class="pdf-list"></div>
   </div>
 
-  <script src="/static/js/scripts.js"></script>
+  <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
