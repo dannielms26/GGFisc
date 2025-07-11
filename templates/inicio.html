@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Versões de Testes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/inicio.css') }}">
+</head>
+<body>
+  <h1>Versões de Testes - Escolha sua versão</h1>
+
+  <div class="button-container">
+    <a href="{{ url_for('index') }}">
+      <button class="btn">Ir para Index</button>
+    </a>
+
+    <a href="{{ url_for('upload') }}">
+      <button class="btn">Ir para Upload</button>
+    </a>
+  </div>
+</body>
+</html>
