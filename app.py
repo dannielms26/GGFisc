@@ -4,7 +4,7 @@ import json
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-UPLOAD_FOLDER = os.path.join('static', 'uploads', 'img')
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
 DATA_FILE = 'data.json'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -14,15 +14,7 @@ if not os.path.exists(DATA_FILE):
 
 @app.route('/')
 def index():
-    return render_template('inicio.html')  # Página com os dois botões
-
-@app.route('/index')
-def pagina_index():
-    return render_template('index.html')  # Página index (conteúdo livre)
-
-@app.route('/upload')
-def pagina_upload():
-    return render_template('upload.html')  # Página com formulário ou lista de uploads
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
